@@ -1,0 +1,16 @@
+$TITLE test the Matlab mex-file gams (GDXMRW05,SEQ=490)
+
+$ontext
+Start Matlab in batch mode to run testinst.m.  You can also run
+'testlib gdxmrw05' to extract the required files in the current dir,
+start Matlab, and run testinst.m interactively.  In either case, the
+log file 'testinstlog.txt' produced shows that the GAMS mex-interface
+is working or helps to identify what the problems are.
+
+Contributor: Steve
+$offtext
+
+$call =rm testinstlog.txt
+$set WAIT
+$if not %system.filesys% == UNIX $set WAIT /wait
+$call =matlab -r "testinst,exit" -logfile testinst.log -nosplash -nodisplay -nojvm %WAIT%

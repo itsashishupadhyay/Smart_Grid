@@ -1,0 +1,30 @@
+$title Checks opening of gdx files for read and write (GDX1,SEQ=19)
+set i / 1,2,3 /;
+$ondollar
+$gdxout good
+$if not errorfree $goto problem
+$call =test -d ugly.gdx
+$if errorlevel 1 $call mkdir ugly.gdx
+$gdxout ugly
+$if errorfree     $goto problem
+$clearerror
+$gdxin  ugly
+$if errorfree     $goto problem
+$clearerror
+$if exist gdxfail.gdx $call rm gdxfail.gdx
+$gdxin gdxfail
+$if errorfree     $goto problem
+$clearerror
+$echo this is wrong > wrong.gdx
+$gdxin wrong
+$if errorfree     $goto problem
+$clearerror
+$call rmdir ugly.gdx
+$call rm    wrong.gdx good.gdx
+$terminate
+
+$label problem
+$call rmdir ugly.gdx
+$call rm    wrong.gdx  good.gdx
+$error gdx problems encountered
+$terminate

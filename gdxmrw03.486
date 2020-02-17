@@ -1,0 +1,47 @@
+$TITLE test the Matlab utility rgdx (GDXMRW03,SEQ=486)
+
+$ontext
+This file contains code to test the GAMS/Matlab utility rgdx
+
+Contributor: Steve
+$offtext
+
+* $call =gams gen_r1.gms
+* $call =gams gen_r2.gms
+* $call =gams gen_rbig.gms
+* the GDX files to read should not need to be (re)generated,
+* but you may find it useful to look at the generating source
+
+$call =rm r1_result.gdx r2_result.gdx rfull_result.gdx rsparse_result.gdx
+$set WAIT
+$if not %system.filesys% == UNIX $set WAIT /wait
+$call =matlab -r r_batch -logfile r_batch.log -nosplash -nodisplay -nojvm %WAIT%
+
+$if not exist r1_result.gdx  $error "r1_result.gdx does not exist"
+$if not exist r2_result.gdx  $error "r2_result.gdx does not exist"
+$if not exist rfull_result.gdx  $error "rfull_result.gdx does not exist"
+$if not exist rsparse_result.gdx  $error "rsparse_result.gdx does not exist"
+
+$if not errorfree $log There were errors: not all tests passed
+$if not errorfree $exit
+
+scalars
+  magic / 525 /,
+  magict,    magic5,    magic4,    magic3,    magic2,    magic1,
+  errCountt, errCount5, errCount4, errCount3, errCount2, errCount1;
+
+execute_load 'r1_result.gdx', magic1=magic, errCount1=errCount;
+execute_load 'r2_result.gdx', magic2=magic, errCount2=errCount;
+execute_load 'rfull_result.gdx', magic3=magic, errCount3=errCount;
+execute_load 'rsparse_result.gdx', magic4=magic, errCount4=errCount;
+
+display magic1, magic2, magic3, magic4
+        errCount1, errCount2, errCount3, errCount4;
+abort$(magic1 <> magic) 'bad magic';
+abort$(magic2 <> magic) 'bad magic';
+abort$(magic3 <> magic) 'bad magic';
+abort$(magic4 <> magic) 'bad magic';
+abort$(errCount1 <> 0) 'bad errCount';
+abort$(errCount2 <> 0) 'bad errCount';
+abort$(errCount3 <> 0) 'bad errCount';
+abort$(errCount4 <> 0) 'bad errCount';

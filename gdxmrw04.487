@@ -1,0 +1,30 @@
+$TITLE test the Matlab utility wgdx' (GDXMRW04,SEQ=487)
+
+$ontext
+Call wgdx and check that the files written are correct.
+
+Contributor: Steve
+$offtext
+
+$if set SKIPMATLAB $goto SKIPMAT
+$call =rm writeset.gdx
+$call =rm writepar.gdx
+$set WAIT
+$if not %system.filesys% == UNIX $set WAIT /wait
+$call =matlab -r w_batch -logfile w_batch.log -nosplash -nodisplay -nojvm %WAIT%
+
+
+$label SKIPMAT
+
+$if not exist  writeset.gdx        $error "writeset.gdx does not exist"
+$call =gdxdiff writeset writeset_
+$if errorlevel 1                   $error "bad content in writeset.gdx"
+
+$if not exist  writepar.gdx        $error "writepar.gdx does not exist"
+$call =gdxdiff writepar writepar_
+$if errorlevel 1                   $error "bad content in writepar.gdx"
+
+$if not errorfree $log There were errors: not all tests passed
+$if not errorfree $exit
+
+$log Normal completion: all tests passed

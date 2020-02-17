@@ -1,0 +1,61 @@
+$TITLE 'test the Matlab utility writegdx' (GDXMRW01,SEQ=247)
+
+$ontext
+
+This file contains code to call writegdx and check that the
+files written are correct.
+
+It's likely that these tests will also serve as the sole
+(or an auxiliary) form of documentation for writegdx.
+
+$offtext
+
+$if set SKIPMATLAB $goto SKIPMAT
+$call =rm ex1.gdx ex1_lab.gdx
+$call =rm write2a.gdx write2b.gdx
+$call =rm exw3.gdx exw3_lab.gdx
+$call =rm write4a.gdx write4b.gdx
+$set WAIT
+$if not %system.filesys% == UNIX $set WAIT /wait
+$call =matlab -r wbatch -logfile wbatch.log -nosplash -nodisplay -nojvm %WAIT%
+
+
+$label SKIPMAT
+
+$if not exist  ex1.gdx         $error "ex1.gdx does not exist"
+$call =gdxdiff ex1 ex1_
+$if errorlevel 1               $error "bad content in ex1.gdx"
+
+$if not exist  ex1_lab.gdx     $error "ex1_lab.gdx does not exist"
+$call =gdxdiff ex1_lab ex1_lab_
+$if errorlevel 1               $error "bad content in ex1_lab.gdx"
+
+$if not exist  write2a.gdx     $error "write2a.gdx does not exist"
+$call =gdxdiff write2a write2a_
+$if errorlevel 1               $error "bad content in write2a.gdx"
+
+$if not exist  write2b.gdx     $error "write2b.gdx does not exist"
+$call =gdxdiff write2b write2b_
+$if errorlevel 1               $error "bad content in write2b.gdx"
+
+$if not exist  exw3.gdx        $error "exw3.gdx does not exist"
+$call =gdxdiff exw3 exw3_
+$if errorlevel 1               $error "bad content in exw3.gdx"
+
+$if not exist  exw3_lab.gdx    $error "exw3_lab.gdx does not exist"
+$call =gdxdiff exw3_lab exw3_lab_
+$if errorlevel 1               $error "bad content in exw3_lab.gdx"
+
+$if not exist  write4a.gdx     $error "write4a.gdx does not exist"
+$call =gdxdiff write4a write4a_
+$if errorlevel 1               $error "bad content in write4a.gdx"
+
+$if not exist  write4b.gdx     $error "write4b.gdx does not exist"
+$call =gdxdiff write4b write4b_
+$if errorlevel 1               $error "bad content in write4b.gdx"
+
+
+$if not errorfree $log There were errors: not all tests passed
+$if not errorfree $exit
+
+$log Normal completion: all tests passed
